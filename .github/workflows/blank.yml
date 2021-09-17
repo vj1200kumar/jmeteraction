@@ -28,14 +28,14 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
-          EXPORT JMETER_VERSION="5.4.1"
-          EXPORT JMETER_HOME="/opt/apache/apache-jmeter-${JMETER_VERSION}"
-          EXPORT JMETER_BIN="${JMETER_HOME}/bin"
-          EXPORT PATH="$PATH:$JMETER_BIN"
-          EXPORT JMETER_CMD_RUNNER_VERSION="2.2"
-          EXPORT JMETER_PLUGIN_MANAGER_VERSION="1.6"
+          JMETER_VERSION="5.4.1"
+          JMETER_HOME="/opt/apache/apache-jmeter-${JMETER_VERSION}"
+          JMETER_BIN="${JMETER_HOME}/bin"
+          PATH="$PATH:$JMETER_BIN"
+          JMETER_CMD_RUNNER_VERSION="2.2"
+          JMETER_PLUGIN_MANAGER_VERSION="1.6"
 
-          RUN apk --no-cache add curl ca-certificates openjdk9-jre && \
+          apk --no-cache add curl ca-certificates openjdk9-jre && \
               curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz --output /tmp/apache-jmeter-${JMETER_VERSION}.tgz && \
               tar -zxvf /tmp/apache-jmeter-${JMETER_VERSION}.tgz && \
               mkdir -p /opt/apache && \
@@ -45,21 +45,21 @@ jobs:
             curl -O https://jmeter-plugins.org/get  && \
             mv plugins-manager.jar /opt/apache/apache-jmeter-${JMETER_VERSION}/lib/ext
 
-          RUN echo ${JMETER_HOME}
-          RUN echo ${JMETER_CMD_RUNNER_VERSION}
-          RUN echo ${JMETER_PLUGIN_MANAGER_VERSION}
+          echo ${JMETER_HOME}
+          echo ${JMETER_CMD_RUNNER_VERSION}
+          echo ${JMETER_PLUGIN_MANAGER_VERSION}
 
-          RUN echo "Downloading CMDRunner"
-          RUN curl -L http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/${JMETER_CMD_RUNNER_VERSION}/cmdrunner-${JMETER_CMD_RUNNER_VERSION}.jar --output ${JMETER_HOME}/lib/cmdrunner-${JMETER_CMD_RUNNER_VERSION}.jar
+          echo "Downloading CMDRunner"
+          curl -L http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/${JMETER_CMD_RUNNER_VERSION}/cmdrunner-${JMETER_CMD_RUNNER_VERSION}.jar --output ${JMETER_HOME}/lib/cmdrunner-${JMETER_CMD_RUNNER_VERSION}.jar
 
-          RUN echo "Downloading Plugin Manager"
-          RUN curl -L https://jmeter-plugins.org/get/ --output ${JMETER_HOME}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGIN_MANAGER_VERSION}.jar
+          echo "Downloading Plugin Manager"
+          curl -L https://jmeter-plugins.org/get/ --output ${JMETER_HOME}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGIN_MANAGER_VERSION}.jar
 
-          RUN java -cp /opt/apache/apache-jmeter-${JMETER_VERSION}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGIN_MANAGER_VERSION}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+          java -cp /opt/apache/apache-jmeter-${JMETER_VERSION}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGIN_MANAGER_VERSION}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
 
-          RUN chmod a+x ${JMETER_HOME}/bin/*.sh
+          chmod a+x ${JMETER_HOME}/bin/*.sh
 
-          RUN ${JMETER_HOME}/bin/PluginsManagerCMD.sh install jpgc-udp=0.4
+          ${JMETER_HOME}/bin/PluginsManagerCMD.sh install jpgc-udp=0.4
           
       # Runs jmeter action
       # - name: PerfAction for JMeter
