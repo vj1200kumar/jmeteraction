@@ -27,19 +27,52 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
+        run: |
+          ENV JMETER_VERSION "5.4.1"
+          ENV JMETER_HOME "/opt/apache/apache-jmeter-${JMETER_VERSION}"
+          ENV JMETER_BIN "${JMETER_HOME}/bin"
+          ENV PATH "$PATH:$JMETER_BIN"
+          ENV JMETER_CMD_RUNNER_VERSION "2.2"
+          ENV JMETER_PLUGIN_MANAGER_VERSION "1.6"
 
-      # Runs jmeter action
-      - name: PerfAction for JMeter
-        uses: QAInsights/PerfAction@2.0
-        with:
-          # jmeter test plan to execute
-          test-plan-path: ./Example.jmx
-          # Optional arguments. For more details https://jmeter.apache.org/usermanual/get-started.html#non_gui
-          args: # optional
+          RUN apk --no-cache add curl ca-certificates openjdk9-jre && \
+              curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz --output /tmp/apache-jmeter-${JMETER_VERSION}.tgz && \
+              tar -zxvf /tmp/apache-jmeter-${JMETER_VERSION}.tgz && \
+              mkdir -p /opt/apache && \
+              mv apache-jmeter-${JMETER_VERSION} /opt/apache && \
+              rm /tmp/apache-jmeter-${JMETER_VERSION}.tgz && \
+              rm -rf /var/cache/apk/* && \
+            curl -O https://jmeter-plugins.org/get  && \
+            mv plugins-manager.jar /opt/apache/apache-jmeter-${JMETER_VERSION}/lib/ext
+
+          RUN echo ${JMETER_HOME}
+          RUN echo ${JMETER_CMD_RUNNER_VERSION}
+          RUN echo ${JMETER_PLUGIN_MANAGER_VERSION}
+
+          RUN echo "Downloading CMDRunner"
+          RUN curl -L http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/${JMETER_CMD_RUNNER_VERSION}/cmdrunner-${JMETER_CMD_RUNNER_VERSION}.jar --output ${JMETER_HOME}/lib/cmdrunner-${JMETER_CMD_RUNNER_VERSION}.jar
+
+          RUN echo "Downloading Plugin Manager"
+          RUN curl -L https://jmeter-plugins.org/get/ --output ${JMETER_HOME}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGIN_MANAGER_VERSION}.jar
+
+          RUN java -cp /opt/apache/apache-jmeter-${JMETER_VERSION}/lib/ext/jmeter-plugins-manager-${JMETER_PLUGIN_MANAGER_VERSION}.jar org.jmeterplugins.repository.PluginManagerCMDInstaller
+
+          RUN chmod a+x ${JMETER_HOME}/bin/*.sh
+
+          RUN ${JMETER_HOME}/bin/PluginsManagerCMD.sh install jpgc-udp=0.4
           
-      - name: Upload Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: jmeter-results
-          path: result.jtl      
+      # Runs jmeter action
+      # - name: PerfAction for JMeter
+      #   uses: QAInsights/PerfAction@2.0
+      #   run: tar -cvf my_files.tar /path/to/my/directory
+      #   with:
+      #     # jmeter test plan to execute
+      #     test-plan-path: ./Example.jmx
+      #     # Optional arguments. For more details https://jmeter.apache.org/usermanual/get-started.html#non_gui
+      #     args: # optional
+      #     
+      # - name: Upload Results
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: jmeter-results
+      #     path: result.jtl
