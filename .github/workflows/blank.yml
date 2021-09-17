@@ -29,7 +29,7 @@ jobs:
       - name: Run a one-line script
         run: |
           sudo apt-get update
-          JMETER_VERSION="5.4.1"
+          JMETER_VERSION="5.1.1"
           JMETER_HOME="/opt/apache/apache-jmeter-${JMETER_VERSION}"
           JMETER_BIN="${JMETER_HOME}/bin"
           PATH="$PATH:$JMETER_BIN"
