@@ -60,6 +60,7 @@ jobs:
           chmod a+x ${JMETER_HOME}/bin/*.sh
 
           ${JMETER_HOME}/bin/PluginsManagerCMD.sh install jpgc-udp=0.4
+          jmeter -n -t ./Example.jmx -l result.jtl
           
       # Runs jmeter action
       # - name: PerfAction for JMeter
