@@ -28,6 +28,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
+          apt-get update
           JMETER_VERSION="5.4.1"
           JMETER_HOME="/opt/apache/apache-jmeter-${JMETER_VERSION}"
           JMETER_BIN="${JMETER_HOME}/bin"
