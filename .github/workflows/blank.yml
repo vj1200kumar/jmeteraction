@@ -41,9 +41,7 @@ jobs:
               mkdir -p /opt/apache && \
               mv apache-jmeter-${JMETER_VERSION} /opt/apache && \
               rm /tmp/apache-jmeter-${JMETER_VERSION}.tgz && \
-              rm -rf /var/cache/apk/* && \
-            curl --output plugins-manager.jar https://jmeter-plugins.org/get  && \
-            mv plugins-manager.jar /opt/apache/apache-jmeter-${JMETER_VERSION}/lib/ext
+              rm -rf /var/cache/apk/*
 
           echo ${JMETER_HOME}
           echo ${JMETER_CMD_RUNNER_VERSION}
