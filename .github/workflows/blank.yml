@@ -37,3 +37,9 @@ jobs:
           test-plan-path: ./Example.jmx
           # Optional arguments. For more details https://jmeter.apache.org/usermanual/get-started.html#non_gui
           args: # optional
+          
+      - name: Upload Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: jmeter-results
+          path: result.jtl      
